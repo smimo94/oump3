@@ -28,9 +28,8 @@ app.post("/download", (req, res) => {
       if (err || files.length === 0) return res.status(500).send("File not found.");
 
       const filePath = path.join(__dirname, outputDir, files[0]);
-      res.download(filePath, () => {
-        fs.unlink(filePath, () => {}); // Clean up after download
-      });
+      res.setHeader("Content-Disposition", `attachment; filename="${path.basename(filePath)}"`);
+        res.download(filePath, () => fs.unlink(filePath, () => {}));
     });
   });
 });
